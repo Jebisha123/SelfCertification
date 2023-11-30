@@ -14,7 +14,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/auth/**")).permitAll())
                 // allow all request under /auth/* to be permitted without spring authentication
-                .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/certificate/**")).permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/certificates/**")).permitAll())
                 .build();
 
     }
