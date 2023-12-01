@@ -52,6 +52,9 @@ catch(Exception e)
 //    }
 @PostMapping("/register")
 public ResponseEntity<String> createUser(@RequestBody @Validated User user) {
+    System.out.println(user);
+        if(user.getPassword().length() > 16 || user.getPassword().length() < 8)
+    return ResponseEntity.status(400).body("Password length should be 8-16");
     try {
         user.setPassword(encoder.encode(user.getPassword()));
         User createdUser = userRepository.save(user);
