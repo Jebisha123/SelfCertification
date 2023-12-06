@@ -26,7 +26,8 @@ public class ExceptionHandlers {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        objectBody.put("Errors", errors);
+      objectBody.put("Result", errors);
+
 
         return ResponseEntity.status(400).body(objectBody);
     }

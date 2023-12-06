@@ -13,7 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,19 +29,23 @@ public class UserController {
     PasswordEncoder encoder;
 
     @PostMapping("/login")
-    public ResponseEntity<String> validateLogin(@RequestBody LoginCredentials loginCredentials) {
+    public ResponseEntity<Object> validateLogin(@RequestBody LoginCredentials loginCredentials) {
+        HashMap<String,String> result = new HashMap<>();
         try {
             User user = userRepository.findUserByUsername(loginCredentials.getUsername());
 
 
             if (user != null && user.getUsername().equals(loginCredentials.getUsername()) && encoder.matches(loginCredentials.getPassword(), user.getPassword())) {
-                return ResponseEntity.ok().body("Login Successful");
+                result.put("result", "Login Successful");
+                return ResponseEntity.ok().body(result);
             } else {
-                return ResponseEntity.status(401).body("Login Failed");
+                result.put("result", "Login Failed");
+                return ResponseEntity.status(401).body(result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Login Failed");
+            result.put("result", "Login Failed");
+            return ResponseEntity.status(401).body(result);
         }
     }
 
@@ -58,19 +65,26 @@ public class UserController {
 //
 //    }
     @PostMapping("/register")
-    public ResponseEntity<String> createUser(@RequestBody @Validated User user) {
+    public ResponseEntity<Object> createUser(@RequestBody @Validated User user) {
+        Map<String, Object> createdResponse = new LinkedHashMap<>();
         System.out.println(user);
         if (user.getPassword().length() > 16 || user.getPassword().length() < 8)
             return ResponseEntity.status(400).body("Password length should be 8-16");
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             User createdUser = userRepository.save(user);
-            return ResponseEntity.status(201).body("User Registered");
+            HashMap<String,String> showUser = new HashMap<>();
+            showUser.put("UserName",user.getUsername());
+            showUser.put("Email",user.getEmail());
+            createdResponse.put("User Registered", showUser);
+            return ResponseEntity.status(201).body(createdResponse);
 
         } catch (Exception e) {
-            System.out.println(e);
+           System.out.println(e);
+
         }
-        return ResponseEntity.status(400).body("User Already Exists");
+        createdResponse.put("User Already Exists", null);
+        return ResponseEntity.status(400).body(createdResponse);
 
     }
 

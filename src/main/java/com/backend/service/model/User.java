@@ -18,16 +18,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Size(max = 20)
-    @Pattern(regexp="^[A-Za-z]*$",message = "Invalid Input. Should contain only alphabets")
+    @Size(max = 20,min = 1)
+    @Pattern(regexp="^[A-Za-z]*$",message = "Invalid Input.FirstName Should contain only alphabets")
     @Column(nullable = false,length = 40)
     private String firstName;
-    @Size(max = 20)
-    @Pattern(regexp="^[A-Za-z]*$",message = "Invalid Input. Should contain only alphabets")
+    @Size(max = 20,min = 1)
+    @Pattern(regexp="^[A-Za-z]*$",message = "Invalid Input.LastName should contain only alphabets")
     @Column(nullable = false,length = 40)
     private String lastName;
     @Column(nullable = false,length = 100)
-    @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,3}")
+    @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,3}",message = "Invalid email")
     private String email;
     @Size(max = 16,min = 8)
     @Column(nullable = false,length = 100)
