@@ -27,12 +27,13 @@ public class User {
     @Column(nullable = false,length = 40)
     private String lastName;
     @Column(nullable = false,length = 100)
-    @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,3}",message = "Invalid email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[com]{3,}$",message = "Invalid email")
     private String email;
     @Size(max = 16,min = 8)
     @Column(nullable = false,length = 100)
+    @Pattern(regexp = "^[a-zA-Z0-9]+$",message = "Invalid username.UserName should alphanumeric")
     private String username;
-//    @Size(max = 16,min = 8)
+//    @Size(min = 16)
     @Column(nullable = false,length = 100)
     private String password;
 //    @Column(nullable = false)

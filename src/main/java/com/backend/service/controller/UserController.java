@@ -69,8 +69,25 @@ public class UserController {
         Map<String, Object> createdResponse = new LinkedHashMap<>();
         HashMap<String,String> showUser = new HashMap<>();
         System.out.println(user);
-        if (user.getPassword().length() > 16 || user.getPassword().length() < 8)
-            return ResponseEntity.status(400).body("Password length should be 8-16");
+        User userEmail =  userRepository.findUserByEmail(user.getEmail());
+        User userUsername = userRepository.findUserByUsername(user.getUsername());
+        if (userEmail != null && userUsername != null) {
+            showUser.put("Message","UserName and Email Already Exists");
+            return ResponseEntity.status(401).body(showUser);
+        }
+        else if (userEmail != null) {
+            showUser.put("Message", "Email Already Exists");
+            return ResponseEntity.status(401).body(showUser);
+        }
+        else if (userUsername != null) {
+            showUser.put("Message", "User Already Exists");
+            return ResponseEntity.status(401).body(showUser);
+        }
+        if (user.getPassword().length() > 16 || user.getPassword().length() < 8) {
+            showUser.put("Message","Password length should be 8-16");
+            createdResponse.put("result", showUser);
+            return ResponseEntity.status(400).body(showUser);
+        }
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             User createdUser = userRepository.save(user);
@@ -84,11 +101,11 @@ public class UserController {
            System.out.println(e);
 
         }
-        showUser.put("Message","User Already Exists");
-        createdResponse.put("result", showUser);
-        return ResponseEntity.status(400).body(createdResponse);
 
-    }
+        return ResponseEntity.status(401).body(null);
+        }
+
+
 
     @GetMapping("/getalluser")
     public ResponseEntity<List<User>> getAllUser() {
