@@ -67,23 +67,25 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Object> createUser(@RequestBody @Validated User user) {
         Map<String, Object> createdResponse = new LinkedHashMap<>();
+        HashMap<String,String> showUser = new HashMap<>();
         System.out.println(user);
         if (user.getPassword().length() > 16 || user.getPassword().length() < 8)
             return ResponseEntity.status(400).body("Password length should be 8-16");
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             User createdUser = userRepository.save(user);
-            HashMap<String,String> showUser = new HashMap<>();
+            showUser.put("Message","User Registered");
             showUser.put("UserName",user.getUsername());
             showUser.put("Email",user.getEmail());
-            createdResponse.put("User Registered", showUser);
+            createdResponse.put("result", showUser);
             return ResponseEntity.status(201).body(createdResponse);
 
         } catch (Exception e) {
            System.out.println(e);
 
         }
-        createdResponse.put("User Already Exists", null);
+        showUser.put("Message","User Already Exists");
+        createdResponse.put("result", showUser);
         return ResponseEntity.status(400).body(createdResponse);
 
     }

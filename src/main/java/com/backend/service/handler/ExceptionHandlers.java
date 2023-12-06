@@ -16,7 +16,7 @@ public class ExceptionHandlers {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception)
     {
         Map<String, Object> objectBody = new LinkedHashMap<>();
-        objectBody.put("Current Timestamp", new Date());
+//        objectBody.put("Current Timestamp", new Date());
 
 
         // Get all errors
@@ -26,7 +26,7 @@ public class ExceptionHandlers {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-      objectBody.put("Result", errors);
+      objectBody.put("result", errors);
 
 
         return ResponseEntity.status(400).body(objectBody);
