@@ -19,24 +19,25 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Size(max = 20,min = 1)
+
     @Pattern(regexp="^[A-Za-z]*$",message = "Invalid FirstName.FirstName Should contain only alphabets")
+    @Size(max = 20,min = 1,message = "Invalid FirstName.size must be between 1 and 20")
     @Column(nullable = false,length = 40)
     private String firstName;
-    @Size(max = 20,min = 1)
+    @Size(max = 20,min = 1,message = "Invalid LastName.size must be between 1 and 20")
     @Pattern(regexp="^[A-Za-z]*$",message = "Invalid LastName.LastName should contain only alphabets")
     @Column(nullable = false,length = 40)
     private String lastName;
     @Column(nullable = false,length = 100)
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[com]{3,}$",message = "Invalid email")
     private String email;
-    @Size(max = 16,min = 8)
+    @Size(max = 16,min = 8,message = "Invalid username.Size must be between 8 and 16")
     @Column(nullable = false,length = 100)
-    @Pattern(regexp = "^[a-zA-Z0-9]+$",message = "Invalid username.")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$",message = "Invalid username.Should be alphanumeric")
     private String username;
 //    @Size(min = 16)
     @Column(nullable = false,length = 100)
-    @Pattern(regexp = "^[^\\s]+$" ,message = "Invalid Password")
+    @Pattern(regexp = "^[^\\s]+$" ,message = "Invalid Password with blank space")
     private String password;
 //    @Column(nullable = false)
     private String role;
