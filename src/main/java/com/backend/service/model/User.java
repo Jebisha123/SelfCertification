@@ -26,13 +26,13 @@ public class User {
     private String firstName;
     @Size(max = 20,min = 1,message = "Invalid LastName.size must be between 1 and 20")
     @Pattern(regexp="^[A-Za-z]*$",message = "Invalid LastName.LastName should contain only alphabets")
-    @Column(nullable = false,length = 40)
+    @Column(nullable = false,length = 20)
     private String lastName;
-    @Column(nullable = false,length = 100)
+    @Column(nullable = false,length = 50)
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[com]{3,}$",message = "Invalid email")
     private String email;
     @Size(max = 16,min = 8,message = "Invalid username.Size must be between 8 and 16")
-    @Column(nullable = false,length = 100)
+    @Column(nullable = false,length = 20)
     @Pattern(regexp = "^[a-zA-Z0-9]+$",message = "Invalid username.Should be alphanumeric")
     private String username;
 //    @Size(min = 16)

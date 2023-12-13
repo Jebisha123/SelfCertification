@@ -1,25 +1,61 @@
 package com.backend.service.controller;
 
-import com.backend.service.model.Certificate;
-import com.backend.service.repository.CertificateRepository;
+import com.backend.service.handler.KeyStoreService;
+import com.backend.service.model.KeyStoreDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/certificates")
 public class CertificateController {
+
+
     @Autowired
-    private  CertificateRepository certificateRepository;
-    @GetMapping
-    public ResponseEntity<List<Certificate>> getCertificate() {
-        System.out.println(certificateRepository.findAll());
-      return  ResponseEntity.ok().body(certificateRepository.findAll());
-
-
+    private KeyStoreService keystoreService;
+    @PostMapping("/save")
+    public ResponseEntity<String> saveKeyStore(@RequestParam String pfxFilePath, @RequestParam String password) throws KeyStoreException, UnsupportedEncodingException {
+        String decodedFilePath = URLDecoder.decode(pfxFilePath, "UTF-8");
+        KeyStore keyStore = null;
+        try {
+            keyStore = KeyStore.getInstance("PKCS12");
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
+        try (FileInputStream fis = new FileInputStream(decodedFilePath)) {
+            keyStore.load(fis, password.toCharArray());
+        } catch (IOException | CertificateException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
+        keystoreService.saveKeyStore(keyStore);
+        return ResponseEntity.status(201).body("Key Store Created");
     }
+
+    @GetMapping("/{id}")
+    public KeyStoreDTO getKeyStoreById(@PathVariable Long id) throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
+        KeyStore keyStore = keystoreService.getKeyStoreById(id);
+        return KeyStoreDTO.fromKeyStore(keyStore);
+    }
+
+    @GetMapping
+    public List<KeyStoreDTO> getKeyStores() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
+        List<KeyStore> allKeyStores = keystoreService.getAllKeyStores();
+        List<KeyStoreDTO> keyStoreDTOS = allKeyStores.stream().map(keyStore -> KeyStoreDTO.fromKeyStore(keyStore)).collect(Collectors.toList());
+        return keyStoreDTOS;
+    }
+
 }
