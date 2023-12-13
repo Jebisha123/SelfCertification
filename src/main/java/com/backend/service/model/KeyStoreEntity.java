@@ -20,6 +20,7 @@ public class KeyStoreEntity {
     @Lob
     @Column(length = 100000)
     private byte[] keystoreData;
+    private String format;
 
 
 }

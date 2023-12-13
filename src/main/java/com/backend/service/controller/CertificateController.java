@@ -28,6 +28,7 @@ public class CertificateController {
     @PostMapping("/save")
     public ResponseEntity<String> saveKeyStore(@RequestParam String pfxFilePath, @RequestParam String password) throws KeyStoreException, UnsupportedEncodingException {
         String decodedFilePath = URLDecoder.decode(pfxFilePath, "UTF-8");
+        String format = decodedFilePath.split("\\.")[1];
         KeyStore keyStore = null;
         try {
             keyStore = KeyStore.getInstance("PKCS12");
@@ -41,21 +42,21 @@ public class CertificateController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Internal Server Error");
         }
-        keystoreService.saveKeyStore(keyStore);
+        keystoreService.saveKeyStore(keyStore,format);
         return ResponseEntity.status(201).body("Key Store Created");
     }
 
     @GetMapping("/{id}")
     public KeyStoreDTO getKeyStoreById(@PathVariable Long id) throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
-        KeyStore keyStore = keystoreService.getKeyStoreById(id);
-        return KeyStoreDTO.fromKeyStore(keyStore);
+        KeyStoreDTO keyStoreDTO = keystoreService.getKeyStoreById(id);
+        return keyStoreDTO;
     }
 
     @GetMapping
     public List<KeyStoreDTO> getKeyStores() throws KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
-        List<KeyStore> allKeyStores = keystoreService.getAllKeyStores();
-        List<KeyStoreDTO> keyStoreDTOS = allKeyStores.stream().map(keyStore -> KeyStoreDTO.fromKeyStore(keyStore)).collect(Collectors.toList());
-        return keyStoreDTOS;
+        return keystoreService.getAllKeyStores();
+
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.backend.service.handler;
 
+import com.backend.service.model.KeyStoreDTO;
 import com.backend.service.model.KeyStoreEntity;
 import com.backend.service.repository.KeyStoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,27 @@ import java.util.stream.Collectors;
 public class KeyStoreService {
     @Autowired
     private KeyStoreRepository keystoreRepository;
-    public void saveKeyStore(KeyStore keyStore) {
+    public void saveKeyStore(KeyStore keyStore,String format) {
         try {
             KeyStoreEntity keystoreEntity = new KeyStoreEntity();
             keystoreEntity.setKeystoreData(convertKeyStoreToBytes(keyStore));
+            keystoreEntity.setFormat(format);
             keystoreRepository.save(keystoreEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public KeyStore getKeyStoreById(Long id)
+    public KeyStoreDTO getKeyStoreById(Long id)
     {
         KeyStoreEntity keyStoreEntity = keystoreRepository.findById(id).get();
-        return convertBytesToKeyStore(keyStoreEntity.getKeystoreData());
+        KeyStore keyStore = convertBytesToKeyStore(keyStoreEntity.getKeystoreData());
+        return KeyStoreDTO.fromKeyStore(keyStore, keyStoreEntity.getFormat());
     }
-    public List<KeyStore> getAllKeyStores()
+    public List<KeyStoreDTO> getAllKeyStores()
     {
         List<KeyStoreEntity> all = keystoreRepository.findAll();
-        List<KeyStore> keyStores = all.stream().map(keyStoreEntity -> convertBytesToKeyStore(keyStoreEntity.getKeystoreData())).collect(Collectors.toList());
-        return keyStores;
+        List<KeyStoreDTO> keyStoreDTOS = all.stream().map(keyStoreEntity -> KeyStoreDTO.fromKeyStore(convertBytesToKeyStore(keyStoreEntity.getKeystoreData()), keyStoreEntity.getFormat())).collect(Collectors.toList());
+        return keyStoreDTOS;
     }
     public byte[] convertKeyStoreToBytes(KeyStore keyStore) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {

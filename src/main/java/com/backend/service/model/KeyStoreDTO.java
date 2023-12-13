@@ -15,12 +15,14 @@ import java.util.*;
 @Builder
 public class KeyStoreDTO {
     private List<CertificateDTO> certificates;
+    private String pkcs12Format;
 
     public KeyStoreDTO() {
         this.certificates = new ArrayList<>();
     }
-    public static KeyStoreDTO fromKeyStore(KeyStore keyStore) {
+    public static KeyStoreDTO fromKeyStore(KeyStore keyStore, String format) {
         KeyStoreDTO keyStoreDTO = new KeyStoreDTO();
+        keyStoreDTO.setPkcs12Format(format);
 
         try {
             Enumeration<String> aliases = keyStore.aliases();
@@ -40,7 +42,6 @@ public class KeyStoreDTO {
                     certificateDTO.setNotBefore(x509Certificate.getNotBefore());
                     certificateDTO.setNotAfter(x509Certificate.getNotAfter());
                     certificateDTO.setPublicKeyAlgorithm(x509Certificate.getPublicKey().getAlgorithm());
-
                     keyStoreDTO.getCertificates().add(certificateDTO);
                 }
             }
