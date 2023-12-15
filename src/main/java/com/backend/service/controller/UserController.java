@@ -1,5 +1,8 @@
 package com.backend.service.controller;
 
+import com.backend.service.handler.KeyStoreService;
+import com.backend.service.model.KeyStoreDTO;
+import com.backend.service.model.KeyStoreEntity;
 import com.backend.service.model.LoginCredentials;
 import com.backend.service.model.User;
 import com.backend.service.repository.UserRepository;
@@ -27,6 +30,8 @@ public class UserController {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder encoder;
+    @Autowired
+    KeyStoreService keyStoreService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> validateLogin(@RequestBody LoginCredentials loginCredentials) {
@@ -36,15 +41,15 @@ public class UserController {
 
 
             if (user != null && user.getUsername().equals(loginCredentials.getUsername()) && encoder.matches(loginCredentials.getPassword(), user.getPassword())) {
-                result.put("result", "Login Successful");
+                result.put("result", "Sign in Success");
                 return ResponseEntity.ok().body(result);
             } else {
-                result.put("result", "Login Failed");
+                result.put("result", "Incorrect UserName and Password");
                 return ResponseEntity.status(401).body(result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("result", "Login Failed");
+            result.put("result", "Incorrect UserName and Password");
             return ResponseEntity.status(401).body(result);
         }
     }
@@ -136,6 +141,23 @@ public class UserController {
                 return ResponseEntity.status(401).body("Email already exists");
         } catch (Exception e) {
             return ResponseEntity.ok().body("Email available");
+        }
+
+    }
+    @GetMapping("/getmycertificates")
+    public ResponseEntity<List<KeyStoreDTO>> getMyCertificate(@RequestParam Long userId) {
+        User user = userRepository.findById(userId).orElse(User.builder().build());
+        try {
+            if (user.getUsername()==null)
+                return ResponseEntity.notFound().build();
+            else
+            {
+                List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
+                return ResponseEntity.ok().body(keyStoreDTOS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
 
     }

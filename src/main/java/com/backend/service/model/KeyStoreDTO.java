@@ -16,13 +16,15 @@ import java.util.*;
 public class KeyStoreDTO {
     private List<CertificateDTO> certificates;
     private String pkcs12Format;
+    private Long id;
 
     public KeyStoreDTO() {
         this.certificates = new ArrayList<>();
     }
-    public static KeyStoreDTO fromKeyStore(KeyStore keyStore, String format) {
+    public static KeyStoreDTO fromKeyStore(KeyStore keyStore, String format,Long id) {
         KeyStoreDTO keyStoreDTO = new KeyStoreDTO();
         keyStoreDTO.setPkcs12Format(format);
+        keyStoreDTO.setId(id);
 
         try {
             Enumeration<String> aliases = keyStore.aliases();

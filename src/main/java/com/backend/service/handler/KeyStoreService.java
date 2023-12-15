@@ -31,13 +31,18 @@ public class KeyStoreService {
     {
         KeyStoreEntity keyStoreEntity = keystoreRepository.findById(id).get();
         KeyStore keyStore = convertBytesToKeyStore(keyStoreEntity.getKeystoreData());
-        return KeyStoreDTO.fromKeyStore(keyStore, keyStoreEntity.getFormat());
+        return KeyStoreDTO.fromKeyStore(keyStore, keyStoreEntity.getFormat(),keyStoreEntity.getId());
     }
     public List<KeyStoreDTO> getAllKeyStores()
     {
         List<KeyStoreEntity> all = keystoreRepository.findAll();
-        List<KeyStoreDTO> keyStoreDTOS = all.stream().map(keyStoreEntity -> KeyStoreDTO.fromKeyStore(convertBytesToKeyStore(keyStoreEntity.getKeystoreData()), keyStoreEntity.getFormat())).collect(Collectors.toList());
+        List<KeyStoreDTO> keyStoreDTOS = all.stream().map(keyStoreEntity -> KeyStoreDTO.fromKeyStore(convertBytesToKeyStore(keyStoreEntity.getKeystoreData()), keyStoreEntity.getFormat(),keyStoreEntity.getId())).collect(Collectors.toList());
         return keyStoreDTOS;
+    }
+    public List<KeyStoreDTO> convertKeystoreEntitytoDTO(List<KeyStoreEntity> keyStoreEntities)
+    {
+        List<KeyStoreDTO> keyStoreDTOS = keyStoreEntities.stream().map(keyStoreEntity -> KeyStoreDTO.fromKeyStore(convertBytesToKeyStore(keyStoreEntity.getKeystoreData()), keyStoreEntity.getFormat(), keyStoreEntity.getId())).collect(Collectors.toList());
+        return  keyStoreDTOS;
     }
     public byte[] convertKeyStoreToBytes(KeyStore keyStore) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {

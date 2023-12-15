@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.access.method.P;
 
+import java.util.List;
+
 @Entity // maps this User object with User table
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +31,7 @@ public class User {
     @Column(nullable = false,length = 20)
     private String lastName;
     @Column(nullable = false,length = 50)
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[com]{3,}$",message = "Invalid email")
+    @Pattern(regexp = "^(?=(?:[^.]*.){1,2}[^.]*$)[a-zA-Z0-9._%+-]+[a-zA-Z0-9]@(gmail|yahoo|hotmail|rediffmail)\\.com$",message = "Invalid email")
     private String email;
     @Size(max = 16,min = 8,message = "Invalid username.Size must be between 8 and 16")
     @Column(nullable = false,length = 20)
@@ -41,4 +43,11 @@ public class User {
     private String password;
 //    @Column(nullable = false)
     private String role;
+    @ManyToMany
+    @JoinTable(
+            name = "user_certificates",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "keystore_id")
+    )
+    private List<KeyStoreEntity> userCertificates;
 }

@@ -15,6 +15,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/auth/**")).permitAll())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/admin/**")).permitAll())
+
                 // allow all request under /auth/* to be permitted without spring authentication
                 .authorizeHttpRequests(auth -> auth.requestMatchers(antMatcher("/certificates/**")).permitAll())
                 .build();
@@ -23,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder handlePasswordEncoder()
     {
-        return new BCryptPasswordEncoder(16);
+        return new BCryptPasswordEncoder(8);
     }
 
 
