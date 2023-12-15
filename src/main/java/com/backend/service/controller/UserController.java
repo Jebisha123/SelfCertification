@@ -44,12 +44,12 @@ public class UserController {
                 result.put("result", "Sign in Success");
                 return ResponseEntity.ok().body(result);
             } else {
-                result.put("result", "Incorrect UserName and Password");
+                result.put("result", "Incorrect Username or Password");
                 return ResponseEntity.status(401).body(result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("result", "Incorrect UserName and Password");
+            result.put("result", "Incorrect Username or Password");
             return ResponseEntity.status(401).body(result);
         }
     }
@@ -77,15 +77,15 @@ public class UserController {
         User userEmail =  userRepository.findUserByEmail(user.getEmail());
         User userUsername = userRepository.findUserByUsername(user.getUsername());
         if (userEmail != null && userUsername != null) {
-            showUser.put("Message","UserName and Email Already Exists");
+            showUser.put("Message","Username already registered");
             return ResponseEntity.status(401).body(showUser);
         }
         else if (userEmail != null) {
-            showUser.put("Message", "Email Already Exists");
+            showUser.put("Message", "Email already registered");
             return ResponseEntity.status(401).body(showUser);
         }
         else if (userUsername != null) {
-            showUser.put("Message", "User Already Exists");
+            showUser.put("Message", "Username already registered");
             return ResponseEntity.status(401).body(showUser);
         }
         if (user.getPassword().length() > 16 || user.getPassword().length() < 8) {
