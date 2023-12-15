@@ -144,21 +144,49 @@ public class UserController {
         }
 
     }
-    @GetMapping("/getmycertificates")
-    public ResponseEntity<List<KeyStoreDTO>> getMyCertificate(@RequestParam Long userId) {
-        User user = userRepository.findById(userId).orElse(User.builder().build());
-        try {
-            if (user.getUsername()==null)
-                return ResponseEntity.notFound().build();
-            else
-            {
-                List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
-                return ResponseEntity.ok().body(keyStoreDTOS);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
+//    @GetMapping("/getmycertificates")
+//    public ResponseEntity<List<KeyStoreDTO>> getMyCertificate(@RequestParam Long userId) {
+//        User user = userRepository.findById(userId).orElse(User.builder().build());
+//        try {
+//            if (user.getUsername()==null)
+//                return ResponseEntity.notFound().build();
+//            else
+//            {
+//                List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
+//                return ResponseEntity.ok().body(keyStoreDTOS);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//
+//    }
+@GetMapping("/getmycertificates")
+public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
+    Map<String, Object> createdResponse = new LinkedHashMap<>();
+    HashMap<String,String> showCertificate = new HashMap<>();
+    User user = userRepository.findUserByUsername(userName);
+    try
+    {
+        if (user==null)
+        {
+            showCertificate.put("Message","No Certificates Available");
+            return ResponseEntity.status(401).body(showCertificate);
+
         }
 
+        else
+        {
+            List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
+            createdResponse.put("Message",keyStoreDTOS);
+            return ResponseEntity.ok().body(createdResponse);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+//        return ResponseEntity.internalServerError().build();
+        showCertificate.put("Message","No Certificates Available");
+        return ResponseEntity.status(401).body(showCertificate);
     }
+
+}
 }
