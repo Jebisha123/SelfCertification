@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false,length = 20)
     private String lastName;
     @Column(nullable = false,length = 50)
-    @Pattern(regexp = "^(?=(?:[^.]*.){1,2}[^.]*$)[a-zA-Z0-9._%+-]+[a-zA-Z0-9]@(gmail|yahoo|hotmail|rediffmail)\\.com$",message = "Invalid email")
+    @Pattern(regexp = "^(?=(?:[^.]*.){1,2}[^.]*$)[a-zA-Z0-9._%+-]+[a-zA-Z0-9]@(gmail|yahoo|hotmail|rediffmail|ymail)\\.com$",message = "Invalid email")
     private String email;
     @Size(max = 16,min = 8,message = "Invalid username.Size must be between 8 and 16")
     @Column(nullable = false,length = 20)
