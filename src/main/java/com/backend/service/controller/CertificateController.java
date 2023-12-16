@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/certificates")
+@CrossOrigin("*")
 public class CertificateController {
 
 
