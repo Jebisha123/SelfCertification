@@ -179,8 +179,8 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
         else
         {
 
-            createdResponse.put("Message",keyStoreDTOS);
-            return ResponseEntity.ok().body(createdResponse);
+//            createdResponse.put("Message",keyStoreDTOS);
+            return ResponseEntity.ok().body(keyStoreDTOS);
         }
     } catch (Exception e) {
         e.printStackTrace();
