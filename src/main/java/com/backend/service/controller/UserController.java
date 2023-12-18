@@ -166,9 +166,10 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
     Map<String, Object> createdResponse = new LinkedHashMap<>();
     HashMap<String,String> showCertificate = new HashMap<>();
     User user = userRepository.findUserByUsername(userName);
+    List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
     try
     {
-        if (user==null)
+        if (keyStoreDTOS.isEmpty())
         {
             showCertificate.put("Message","No Certificates Available");
             return ResponseEntity.status(401).body(showCertificate);
@@ -177,7 +178,7 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
 
         else
         {
-            List<KeyStoreDTO> keyStoreDTOS = keyStoreService.convertKeystoreEntitytoDTO(user.getUserCertificates());
+
             createdResponse.put("Message",keyStoreDTOS);
             return ResponseEntity.ok().body(createdResponse);
         }

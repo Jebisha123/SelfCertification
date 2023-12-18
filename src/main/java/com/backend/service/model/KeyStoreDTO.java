@@ -17,6 +17,7 @@ public class KeyStoreDTO {
     private List<CertificateDTO> certificates;
     private String pkcs12Format;
     private Long id;
+    private String certName;
 
     public KeyStoreDTO() {
         this.certificates = new ArrayList<>();
@@ -37,6 +38,7 @@ public class KeyStoreDTO {
 
                     CertificateDTO certificateDTO = new CertificateDTO();
                     certificateDTO.setAlias(alias);
+                    keyStoreDTO.setCertName(alias);
                     certificateDTO.setSubject((x509Certificate.getSubjectDN().getName()));
                     certificateDTO.setAlternativeNames((List<?>) getAlternativeNames(x509Certificate));
                     certificateDTO.setIssuer(x509Certificate.getIssuerDN().getName());

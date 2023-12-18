@@ -1,5 +1,6 @@
 package com.backend.service.controller;
 
+import com.backend.service.model.AssociateRequest;
 import com.backend.service.model.KeyStoreEntity;
 import com.backend.service.model.User;
 import com.backend.service.repository.KeyStoreRepository;
@@ -34,15 +35,15 @@ public class AdminController {
 //        userRepository.save(user);
 //        return ResponseEntity.ok().body("Associated Successfully");
 //    }
-    public ResponseEntity<Object> associateCertificate(@RequestParam String userName, @RequestParam Long keyStoreId) {
-        Map<String, Object> createdResponse = new LinkedHashMap<>();
+    public ResponseEntity<Object> associateCertificate(@RequestBody AssociateRequest associateRequest) {
+
         HashMap<String, String> showAssociate = new HashMap<>();
         try {
 
-            User user = userRepository.findUserByUsername(userName);
-            KeyStoreEntity keyStoreEntity = keyStoreRepository.findById(keyStoreId).get();
+            User user = userRepository.findUserByUsername(associateRequest.getUserName());
+            List<KeyStoreEntity> allById = keyStoreRepository.findAllById(associateRequest.getKeyStoreIds());
             List<KeyStoreEntity> userCertificates = user.getUserCertificates();
-            userCertificates.add(keyStoreEntity);
+            userCertificates.addAll(allById);
             userRepository.save(user);
             showAssociate.put("Message", "Certificate Associated");
             return ResponseEntity.status(201).body(showAssociate);
@@ -52,4 +53,23 @@ public class AdminController {
 
         }
     }
+    @DeleteMapping("/disassociate")
+    public ResponseEntity<Object> deleteAssociateCertificate(@RequestBody AssociateRequest associateRequest)
+    {
+        try {
+            User user = userRepository.findUserByUsername(associateRequest.getUserName());
+            List<KeyStoreEntity> allById = keyStoreRepository.findAllById(associateRequest.getKeyStoreIds());
+            List<KeyStoreEntity> userCertificates = user.getUserCertificates();
+            userCertificates.removeAll(allById);
+            userRepository.save(user);
+            return ResponseEntity.ok().body(Map.of("Message", "Certificate Disassociated"));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("Message","Certificate Disassociation failed"));
+        }
+
+    }
+
 }
