@@ -14,12 +14,13 @@ import java.util.List;
 @NoArgsConstructor
 public class CertificateDTO {
     private String alias;
-    private String subject;
-    private List<?> alternativeNames;
+//    private List<?> alternativeNames;
     private String issuer;
     private String serialNumber;
-    private Date notBefore;
-    private Date notAfter;
+    private Date validFrom;
+    private Date validTo;
     private String publicKeyAlgorithm;
+    private String signatureAlgorithm;
+//    private String version;
 
 }

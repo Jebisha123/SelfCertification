@@ -15,16 +15,16 @@ import java.util.*;
 @Builder
 public class KeyStoreDTO {
     private List<CertificateDTO> certificates;
-    private String pkcs12Format;
+//    private String pkcs12Format;
     private Long id;
-    private String certName;
+//    private String certName;
 
     public KeyStoreDTO() {
         this.certificates = new ArrayList<>();
     }
     public static KeyStoreDTO fromKeyStore(KeyStore keyStore, String format,Long id) {
         KeyStoreDTO keyStoreDTO = new KeyStoreDTO();
-        keyStoreDTO.setPkcs12Format(format);
+//        keyStoreDTO.setPkcs12Format(format);
         keyStoreDTO.setId(id);
 
         try {
@@ -38,15 +38,17 @@ public class KeyStoreDTO {
 
                     CertificateDTO certificateDTO = new CertificateDTO();
                     certificateDTO.setAlias(alias);
-                    keyStoreDTO.setCertName(alias);
-                    certificateDTO.setSubject((x509Certificate.getSubjectDN().getName()));
-                    certificateDTO.setAlternativeNames((List<?>) getAlternativeNames(x509Certificate));
+//                    keyStoreDTO.setCertName(alias);
+//                    certificateDTO.setAlternativeNames((List<?>) getAlternativeNames(x509Certificate));
                     certificateDTO.setIssuer(x509Certificate.getIssuerDN().getName());
                     certificateDTO.setSerialNumber(String.valueOf(x509Certificate.getSerialNumber()));
-                    certificateDTO.setNotBefore(x509Certificate.getNotBefore());
-                    certificateDTO.setNotAfter(x509Certificate.getNotAfter());
+                    certificateDTO.setSignatureAlgorithm(x509Certificate.getSigAlgName());
+//                    certificateDTO.setVersion(String.valueOf(x509Certificate.getVersion()));
+                    certificateDTO.setValidFrom(x509Certificate.getNotBefore());
+                    certificateDTO.setValidTo(x509Certificate.getNotAfter());
                     certificateDTO.setPublicKeyAlgorithm(x509Certificate.getPublicKey().getAlgorithm());
                     keyStoreDTO.getCertificates().add(certificateDTO);
+
                 }
             }
         } catch (Exception e) {

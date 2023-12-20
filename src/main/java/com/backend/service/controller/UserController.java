@@ -172,7 +172,7 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
         if (keyStoreDTOS.isEmpty())
         {
             showCertificate.put("Message","No Certificates Available");
-            return ResponseEntity.status(401).body(showCertificate);
+            return ResponseEntity.status(404).body(showCertificate);
 
         }
 
@@ -185,8 +185,8 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
     } catch (Exception e) {
         e.printStackTrace();
 //        return ResponseEntity.internalServerError().build();
-        showCertificate.put("Message","No Certificates Available");
-        return ResponseEntity.status(401).body(showCertificate);
+        showCertificate.put("Message","Internal ServerError"+e);
+        return ResponseEntity.status(500).body(showCertificate);
     }
 
 }

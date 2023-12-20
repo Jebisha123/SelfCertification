@@ -48,8 +48,9 @@ public class AdminController {
             showAssociate.put("Message", "Certificate Associated");
             return ResponseEntity.status(201).body(showAssociate);
         } catch (Exception e) {
+            e.printStackTrace();
             showAssociate.put("Message", "Certificate not Associated");
-            return ResponseEntity.status(400).body(showAssociate);
+            return ResponseEntity.status(500).body(showAssociate);
 
         }
     }
