@@ -43,6 +43,8 @@ public class User {
     private String password;
 //    @Column(nullable = false)
     private String role;
+    private String question;
+    private String answer;
     @ManyToMany
     @JoinTable(
             name = "user_certificates",

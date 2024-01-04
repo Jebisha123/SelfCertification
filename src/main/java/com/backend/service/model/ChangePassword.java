@@ -1,16 +1,16 @@
 package com.backend.service.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginCredentials {
+@Builder
+public class ChangePassword {
     private String username;
-    private String password;
     private String question;
     private String answer;
-
 }

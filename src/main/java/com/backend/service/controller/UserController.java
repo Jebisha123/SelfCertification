@@ -1,10 +1,6 @@
 package com.backend.service.controller;
-
 import com.backend.service.handler.KeyStoreService;
-import com.backend.service.model.KeyStoreDTO;
-import com.backend.service.model.KeyStoreEntity;
-import com.backend.service.model.LoginCredentials;
-import com.backend.service.model.User;
+import com.backend.service.model.*;
 import com.backend.service.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.apache.coyote.Response;
@@ -32,6 +28,8 @@ public class UserController {
     PasswordEncoder encoder;
     @Autowired
     KeyStoreService keyStoreService;
+//    @Autowired
+//    ChangePassword changePassword;
 
     @PostMapping("/login")
     public ResponseEntity<Object> validateLogin(@RequestBody LoginCredentials loginCredentials) {
@@ -190,4 +188,78 @@ public ResponseEntity<Object> getMyCertificate(@RequestParam String userName) {
     }
 
 }
+//    @GetMapping("/getmyquestion")
+//    public ResponseEntity<Object> getmyquestion(@RequestParam(value = "username") String username) {
+//        User user = userRepository.findUserByUsername(username);
+//        try {
+//            if (user.getEmail().isEmpty())
+//                return ResponseEntity.ok().body(user);
+//            else
+//                return ResponseEntity.status(401).body(user.getQuestion());
+//        } catch (Exception e) {
+//            return ResponseEntity.ok().body(user);
+//        }
+//
+//    }
+@GetMapping("/getmyquestion")
+public ResponseEntity<Object> getmyquestion(@RequestBody AssociateRequest associateRequest) {
+    HashMap<String,String> result = new HashMap<>();
+    User user = userRepository.findUserByUsername(associateRequest.getUserName());
+    try {
+        if (user.getQuestion().isEmpty()) {
+            result.put("Question", "Question not available");
+            return ResponseEntity.ok().body(result);
+        }
+        else {
+            result.put("Question", user.getQuestion());
+            return ResponseEntity.status(401).body(result);
+        }
+    } catch (Exception e) {
+        result.put("Question", "Question not available");
+        return ResponseEntity.ok().body(result);
+    }
+
+}
+@PutMapping("/changepassword")
+public ResponseEntity<Object> changePassword(@RequestBody LoginCredentials loginCredentials) {
+    HashMap<String,Object> result = new HashMap<>();
+    User user = userRepository.findUserByUsername(loginCredentials.getUsername());
+    try {
+        if (user != null && user.getUsername().equals(loginCredentials.getUsername()))
+            {
+                user.setPassword(encoder.encode(loginCredentials.getPassword()));
+                User createdUser = userRepository.save(user);
+                result.put("result", "Password Successfully updated");
+                return ResponseEntity.ok().body(result);
+            }
+        else {
+            result.put("result", "Something went wrong");
+            return ResponseEntity.status(401).body(result);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        result.put("result","Something went wrong");
+        return ResponseEntity.status(401).body(result);
+    }
+}
+    @PostMapping("/securitycheck")
+    public ResponseEntity<Object> securityCheck(@RequestBody LoginCredentials loginCredentials) {
+        HashMap<String,String> result = new HashMap<>();
+        try {
+            User user = userRepository.findUserByUsername(loginCredentials.getUsername());
+            if (user != null && user.getUsername().equals(loginCredentials.getUsername()) && user.getQuestion().equals(loginCredentials.getQuestion())&&user.getAnswer().equals(loginCredentials.getAnswer())) {
+                result.put("result", "Success");
+                return ResponseEntity.ok().body(result);
+            } else {
+                result.put("result", "Incorrect Answer");
+                return ResponseEntity.status(401).body(result);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("result", "Incorrect Answer");
+            return ResponseEntity.status(401).body(result);
+        }
+    }
+
+
 }
