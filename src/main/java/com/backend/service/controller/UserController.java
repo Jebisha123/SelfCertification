@@ -225,7 +225,7 @@ public ResponseEntity<Object> changePassword(@RequestBody LoginCredentials login
     HashMap<String,Object> result = new HashMap<>();
     User user = userRepository.findUserByUsername(loginCredentials.getUsername());
     try {
-        if (user != null && user.getUsername().equals(loginCredentials.getUsername()))
+        if (user != null && user.getUsername().equals(loginCredentials.getUsername()) && !encoder.matches(loginCredentials.getPassword(), user.getPassword()))
             {
                 user.setPassword(encoder.encode(loginCredentials.getPassword()));
                 User createdUser = userRepository.save(user);
@@ -233,7 +233,7 @@ public ResponseEntity<Object> changePassword(@RequestBody LoginCredentials login
                 return ResponseEntity.ok().body(result);
             }
         else {
-            result.put("result", "Something went wrong");
+            result.put("result", "Update with new password");
             return ResponseEntity.status(401).body(result);
         }
     } catch (Exception e) {
@@ -251,12 +251,12 @@ public ResponseEntity<Object> changePassword(@RequestBody LoginCredentials login
                 result.put("result", "Success");
                 return ResponseEntity.ok().body(result);
             } else {
-                result.put("result", "Incorrect Answer");
+                result.put("result", "Incorrect Username or answer");
                 return ResponseEntity.status(401).body(result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("result", "Incorrect Answer");
+            result.put("result", "Incorrect Username or answer");
             return ResponseEntity.status(401).body(result);
         }
     }
